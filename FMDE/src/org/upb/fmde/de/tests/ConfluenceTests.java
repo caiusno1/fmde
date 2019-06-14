@@ -59,9 +59,11 @@ public class ConfluenceTests {
 		Assert.assertTrue("should be independent", independent);
 	}
 	
+	/**
+	 * This test should check that the constructed rule applications in finsets are not parallel independent
+	 */
 	@Test
-	public void parallelIndependence2() {
-		//TODO: Implement parallelIndependence
+	public void notParallelIndependent() {
 		FinSet L1 = new FinSet("L1", "a");
 		FinSet R1 = new FinSet("R1", "a", "b");
 		FinSet K1 = new FinSet("K1", "a");
@@ -88,6 +90,7 @@ public class ConfluenceTests {
 		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
 		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second, dpo1.get().pushout.left, m1); 
 		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second, dpo2.get().pushout.left, m2);
+		
 		boolean independent = new RuleApplications().areIndependentFinSets(rule1, rule2);
 		Assert.assertFalse("should not be independent", independent);
 	}
