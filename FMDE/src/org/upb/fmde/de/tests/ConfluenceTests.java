@@ -53,8 +53,8 @@ public class ConfluenceTests {
 		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets,l2,r2);
 		
 		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
-		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushout.left, dpo1.get().pushout.right, m1); 
-		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushout.left, dpo2.get().pushout.right, m2);
+		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second, dpo1.get().pushout.left, m1); 
+		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second, dpo2.get().pushout.left, m2);
 		boolean independent = new RuleApplications().areIndependentFinSets(rule1, rule2);
 		Assert.assertTrue("should be independent", independent);
 	}
@@ -86,8 +86,8 @@ public class ConfluenceTests {
 		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets,l2,r2);
 		
 		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
-		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushout.left, dpo1.get().pushout.right, m1); 
-		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushout.left, dpo2.get().pushout.right, m2);
+		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second, dpo1.get().pushout.left, m1); 
+		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second, dpo2.get().pushout.left, m2);
 		boolean independent = new RuleApplications().areIndependentFinSets(rule1, rule2);
 		Assert.assertFalse("should not be independent", independent);
 	}
