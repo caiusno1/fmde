@@ -55,7 +55,7 @@ public class ConfluenceTests {
 		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
 		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second, dpo1.get().pushout.left, m1); 
 		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second, dpo2.get().pushout.left, m2);
-		boolean independent = new RuleApplications().areIndependentFinSets(rule1, rule2);
+		boolean independent = new RuleApplications().areIndependent(rule1, rule2, FinSets.FinSets);
 		Assert.assertTrue("should be independent", independent);
 	}
 	
@@ -91,7 +91,7 @@ public class ConfluenceTests {
 		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second, dpo1.get().pushout.left, m1); 
 		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second, dpo2.get().pushout.left, m2);
 		
-		boolean independent = new RuleApplications().areIndependentFinSets(rule1, rule2);
+		boolean independent = new RuleApplications().areIndependent(rule1, rule2, FinSets.FinSets);
 		Assert.assertFalse("should not be independent", independent);
 	}
 }
