@@ -3,14 +3,9 @@ package org.upb.fmde.de.categories.independence;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.upb.fmde.de.categories.Category;
 import org.upb.fmde.de.categories.ComparableArrow;
-import org.upb.fmde.de.categories.LabelledArrow;
-import org.upb.fmde.de.categories.LabelledCategory;
 import org.upb.fmde.de.categories.PatternMatcher;
-import org.upb.fmde.de.categories.colimits.pushouts.CategoryWithPushouts;
-import org.upb.fmde.de.categories.concrete.finsets.FinSet;
 import org.upb.fmde.de.categories.concrete.finsets.FinSetPatternMatcher;
 import org.upb.fmde.de.categories.concrete.finsets.FinSets;
 import org.upb.fmde.de.categories.concrete.finsets.TotalFunction;
@@ -18,7 +13,6 @@ import org.upb.fmde.de.categories.concrete.graphs.GraphMorphism;
 import org.upb.fmde.de.categories.concrete.graphs.GraphPatternMatcher;
 import org.upb.fmde.de.categories.concrete.graphs.Graphs;
 import org.upb.fmde.de.categories.concrete.tgraphs.TGraphMorphism;
-import org.upb.fmde.de.categories.concrete.tgraphs.TGraphPrinter;
 import org.upb.fmde.de.categories.concrete.tgraphs.TGraphs;
 
 public class RuleApplications {
