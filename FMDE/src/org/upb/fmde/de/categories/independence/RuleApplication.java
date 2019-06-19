@@ -16,19 +16,24 @@ public class RuleApplication<Arr> {
 	public Arr getMatch() {
 		return M;
 	}
+	public Arr getCoMatch() {
+		return M;
+	}
 	
 	private Span<Arr> rule;
 	private Arr F;
 	private Arr G;
 	private Arr M;
+	private Arr N;
 	
 
-	public RuleApplication(Span<Arr> rule, Arr f, Arr g, Arr m) 
+	public RuleApplication(Span<Arr> rule, Arr f, Arr g, Arr m, Arr n) 
 	{
 		this.rule = rule;
 		this.G = g;
 		this.F = f;
 		this.M = m;
+		this.N = n;
 	}
 
 	public Span<Arr> getRule() {
