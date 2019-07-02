@@ -179,6 +179,75 @@ public class ConfluenceTests {
 		Assert.assertTrue("should be independent", independent);
 	}
 	
+	@Test
+	public void notSequentialIndependentSets() {
+		FinSet L1 = new FinSet("L1", "a");
+		FinSet R1 = new FinSet("R1", "a_2", "b");
+		FinSet K1 = new FinSet("K1", "a_1");
+		FinSet G = new FinSet("G", "a");
+
+		TotalFunction r1 = new TotalFunction(K1, "r1", R1).addMapping(K1.get("a_1"), R1.get("a_2"));
+		TotalFunction l1 = new TotalFunction(K1, "l1", L1).addMapping(K1.get("a_1"), L1.get("a"));
+		TotalFunction m1 = new TotalFunction(L1, "m1", G).addMapping(L1.get("a"), G.get("a"));
+
+		Span<TotalFunction> L1_K1_R1 = new Span<TotalFunction>(FinSets.FinSets, l1, r1);
+
+		Optional<DirectDerivation<TotalFunction>> dpo1 = FinSets.FinSets.doublePushout(L1_K1_R1, m1);
+
+		FinSet L2 = new FinSet("L2", "a", "b");
+		FinSet R2 = new FinSet("R2");
+		FinSet K2 = new FinSet("K2");
+
+		TotalFunction r2 = new TotalFunction(K2, "r2", R2);
+		TotalFunction l2 = new TotalFunction(K2, "l2", L2);
+		TotalFunction m2 = new TotalFunction(L2, "m2", dpo1.get().pushout.left.trg()).addMapping(L2.get("a"), dpo1.get().pushout.left.trg().get("a")).addMapping(L2.get("b"), dpo1.get().pushout.left.trg().get("b"));
+
+		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets, l2, r2);
+
+		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
+		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
+				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
+		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
+				dpo2.get().pushout.left, m2, dpo2.get().pushout.right);
+		boolean independent = new RuleApplications().areSequentialIndependent(rule1, rule2, FinSets.FinSets);
+		Assert.assertFalse("should not be independent", independent);
+	}
+	
+	@Test
+	public void sequentialIndependentSets() {
+		FinSet L1 = new FinSet("L1", "a");
+		FinSet R1 = new FinSet("R1", "a_2", "b");
+		FinSet K1 = new FinSet("K1", "a_1");
+		FinSet G = new FinSet("G", "a");
+
+		TotalFunction r1 = new TotalFunction(K1, "r1", R1).addMapping(K1.get("a_1"), R1.get("a_2"));
+		TotalFunction l1 = new TotalFunction(K1, "l1", L1).addMapping(K1.get("a_1"), L1.get("a"));
+		TotalFunction m1 = new TotalFunction(L1, "m1", G).addMapping(L1.get("a"), G.get("a"));
+
+		Span<TotalFunction> L1_K1_R1 = new Span<TotalFunction>(FinSets.FinSets, l1, r1);
+
+		Optional<DirectDerivation<TotalFunction>> dpo1 = FinSets.FinSets.doublePushout(L1_K1_R1, m1);
+
+		FinSet L2 = new FinSet("L2", "a_5");
+		FinSet R2 = new FinSet("R2", "a_4", "c");
+		FinSet K2 = new FinSet("K2", "a_3");
+
+		TotalFunction r2 = new TotalFunction(K2, "r2", R2).addMapping(K2.get("a_3"), R2.get("a_4"));
+		TotalFunction l2 = new TotalFunction(K2, "l2", L2).addMapping(K2.get("a_3"), L2.get("a_5"));
+		TotalFunction m2 = new TotalFunction(L2, "m2", dpo1.get().pushout.left.trg()).addMapping(L2.get("a_5"), dpo1.get().pushout.left.trg().get("a"));
+
+
+		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets, l2, r2);
+
+		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
+		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
+				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
+		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
+				dpo2.get().pushout.left, m2, dpo2.get().pushout.right);
+		boolean independent = new RuleApplications().areSequentialIndependent(rule1, rule2, FinSets.FinSets);
+		Assert.assertTrue("should be independent", independent);
+	}
+	
 	//########### Graphs #####################
 	
 	@Test

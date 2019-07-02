@@ -17,7 +17,7 @@ public class RuleApplication<Arr> {
 		return M;
 	}
 	public Arr getCoMatch() {
-		return M;
+		return N;
 	}
 	
 	private Span<Arr> rule;
