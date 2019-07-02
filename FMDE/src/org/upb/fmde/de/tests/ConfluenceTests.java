@@ -19,8 +19,11 @@ import org.upb.fmde.de.categories.concrete.finsets.FinSets;
 import org.upb.fmde.de.categories.concrete.finsets.OpCounterExampleChecker;
 import org.upb.fmde.de.categories.concrete.finsets.TotalFunction;
 import org.upb.fmde.de.categories.concrete.graphs.Graph;
+import org.upb.fmde.de.categories.concrete.graphs.GraphDiagram;
 import org.upb.fmde.de.categories.concrete.graphs.GraphMorphism;
+import org.upb.fmde.de.categories.concrete.graphs.GraphPrinter;
 import org.upb.fmde.de.categories.concrete.graphs.Graphs;
+import org.upb.fmde.de.categories.concrete.graphs.helpers.GraphFactory;
 import org.upb.fmde.de.categories.diagrams.Diagram;
 import org.upb.fmde.de.categories.independence.RuleApplication;
 import org.upb.fmde.de.categories.independence.RuleApplications;
@@ -49,7 +52,6 @@ public class ConfluenceTests {
 		TotalFunction r2 = new TotalFunction(K2, "r2", R2).addMapping(K2.get("existingCard"), R2.get("existingCard"));
 		TotalFunction l2 = new TotalFunction(K2, "l2", L2).addMapping(K2.get("existingCard"), L2.get("existingCard"));
 		TotalFunction m2 = new TotalFunction(L2, "m2", G).addMapping(L2.get("existingCard"), G.get("install new sink"));
-
 		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets, l2, r2);
 
 		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
@@ -79,7 +81,6 @@ public class ConfluenceTests {
 		Span<TotalFunction> L1_K1_R1 = new Span<TotalFunction>(FinSets.FinSets, l1, r1);
 
 		Optional<DirectDerivation<TotalFunction>> dpo1 = FinSets.FinSets.doublePushout(L1_K1_R1, m1);
-
 		FinSet L2 = new FinSet("L2", "a");
 		FinSet R2 = new FinSet("R2");
 		FinSet K2 = new FinSet("K2");
@@ -268,5 +269,38 @@ public class ConfluenceTests {
 				dpo2.get().pushout.left, m2, null);
 		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, Graphs.Graphs);
 		Assert.assertTrue("should be independent", independent);
+	}
+	@Test
+	public void sequentialIndependentGraphs() {
+		GraphFactory fac = new GraphFactory();
+		Graph L1=fac.createGraph(new int[][] {{0}}, "L1");
+		Graph K1=fac.createGraph(new int[][] {{0}}, "K1");
+		Graph R1=fac.createGraph(new int[][] {{0,1},{0,0}}, "R1");
+		Graph G=fac.createGraph(new int[][] {{1}}, "K1");
+		
+		GraphMorphism l1= fac.createGraphMorphism(K1, "l1", L1, new int[][] {{1}}, new int[][] {});
+		GraphMorphism r1= fac.createGraphMorphism(K1, "r1", R1, new int[][] {{1}}, new int[][] {});
+		GraphMorphism m1= fac.createGraphMorphism(L1, "m1", G, new int[][] {{1}}, new int[][] {});
+		Span<GraphMorphism> L1_K1_R1 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		
+		Optional<DirectDerivation<GraphMorphism>> dpo1 = Graphs.Graphs.doublePushout(L1_K1_R1, m1);
+		
+		Graph L2=fac.createGraph(new int[][] {{0}}, "L2");
+		Graph K2=fac.createGraph(new int[][] {{0}}, "K2");
+		Graph R2=fac.createGraph(new int[][] {{0,1},{0,0}}, "R2");
+		
+		GraphMorphism l2= fac.createGraphMorphism(K2, "l2", L2, new int[][] {{1}}, new int[][] {});
+		GraphMorphism r2= fac.createGraphMorphism(K2, "r2", R2, new int[][] {{1}}, new int[][] {});
+		GraphMorphism m2= fac.createGraphMorphism(L1, "m2", dpo1.get().pushoutComplement.first.trg(), new int[][] {{1}}, new int[][] {});
+		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		
+		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m1);
+		
+		RuleApplication<GraphMorphism> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
+				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
+		RuleApplication<GraphMorphism> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
+				dpo2.get().pushout.left, m2,dpo2.get().pushout.right);
+		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, Graphs.Graphs);
+		assertTrue("should be independent",independent);
 	}
 }

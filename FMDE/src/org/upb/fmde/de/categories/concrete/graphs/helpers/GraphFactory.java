@@ -14,13 +14,13 @@ public class GraphFactory {
 		TotalFunction trg = new TotalFunction(edges, "trg", vertices);
 		
 		for(int i = 0; i<graphMatrix.length; i++) {
-			vertices.elts().add(i);
+			vertices.elts().add(name+":"+i);
 			for(int j = 0; j<graphMatrix[i].length; j++) {
 				if(graphMatrix[i][j] == 1 ) {
-					String edge = i+"->"+j;
+					String edge = name+":"+i+"->"+j;
 					edges.elts().add(edge);
-					src.addMapping(i, edge);
-					trg.addMapping(edges, j);
+					src.addMapping(edge, name+":"+i);
+					trg.addMapping(edge, name+":"+j);
 				}
 			}
 		}
