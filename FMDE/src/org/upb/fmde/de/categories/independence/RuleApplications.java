@@ -14,6 +14,7 @@ import org.upb.fmde.de.categories.concrete.graphs.GraphPatternMatcher;
 import org.upb.fmde.de.categories.concrete.graphs.Graphs;
 import org.upb.fmde.de.categories.concrete.tgraphs.TGraphMorphism;
 import org.upb.fmde.de.categories.concrete.tgraphs.TGraphs;
+import org.upb.fmde.de.categories.concrete.tgraphs.TPatternMatcher;
 
 public class RuleApplications {
 	public boolean areParallelIndependent(RuleApplication<TotalFunction> r, RuleApplication<TotalFunction> r2, FinSets cat) {
@@ -34,12 +35,12 @@ public class RuleApplications {
 	
 	public boolean areParallelIndependent(RuleApplication<TGraphMorphism> r, RuleApplication<TGraphMorphism> r2, TGraphs cat) {
 		//TODO find the TGraphPatternMatcher & implement this method
-		return false;
+		return this.areParallelIndependent(r, r2,(P,G)-> new TPatternMatcher(P, G), cat);
 	}
 	
 	public boolean areSequentialIndependent(RuleApplication<TGraphMorphism> r, RuleApplication<TGraphMorphism> r2, TGraphs cat) {
 		//TODO find the TGraphPatternMatcher & implement this method
-		return false;
+		return this.areSequentialIndependent(r, r2,(P,G)-> new TPatternMatcher(P, G), cat);
 	}
 	
 	private <Ob,Arr> boolean areParallelIndependent(RuleApplication<Arr> r, RuleApplication<Arr> r2, BiFunction<Ob,Ob,PatternMatcher<Ob, Arr>> matcher, Category<Ob, Arr> cat) {
