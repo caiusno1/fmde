@@ -360,17 +360,50 @@ public class ConfluenceTests {
 		
 		GraphMorphism l2= fac.createGraphMorphism(K2, "l2", L2, new int[][] {{1}}, new int[][] {});
 		GraphMorphism r2= fac.createGraphMorphism(K2, "r2", R2, new int[][] {{1}}, new int[][] {});
-		GraphMorphism m2= fac.createGraphMorphism(L1, "m2", dpo1.get().pushoutComplement.first.trg(), new int[][] {{1}}, new int[][] {});
-		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		GraphMorphism m2= fac.createGraphMorphism(L2, "m2", dpo1.get().pushout.left.trg(), new int[][] {{1}}, new int[][] {});
+		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l2, r2);
 		
-		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m1);
+		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m2);
 		
 		RuleApplication<GraphMorphism> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
 				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
 		RuleApplication<GraphMorphism> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
 				dpo2.get().pushout.left, m2,dpo2.get().pushout.right);
-		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, Graphs.Graphs);
+		boolean independent = new RuleApplications().areSequentialIndependent(rule1, rule2, Graphs.Graphs);
 		assertTrue("should be independent",independent);
+	}
+	@Test
+	public void notSequentialIndependentGraphs() {
+		GraphFactory fac = new GraphFactory();
+		Graph L1=fac.createGraph(new int[][] {{0,1},{0,0}}, "L1");
+		Graph K1=fac.createGraph(new int[][] {{0}}, "K1");
+		Graph R1=fac.createGraph(new int[][] {{0,0},{1,0}}, "R1");
+		Graph G=fac.createGraph(new int[][] {{0,1}, {0,0}}, "K1");
+		
+		GraphMorphism l1= fac.createGraphMorphism(K1, "l1", L1, new int[][] {{1,0}, {0,0}}, new int[][] {});
+		GraphMorphism r1= fac.createGraphMorphism(K1, "r1", R1, new int[][] {{1,0}, {0,0}}, new int[][] {});
+		GraphMorphism m1= fac.createGraphMorphism(L1, "m1", G, new int[][] {{1,0}, {0,1}}, new int[][] {{1}});
+		Span<GraphMorphism> L1_K1_R1 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		
+		Optional<DirectDerivation<GraphMorphism>> dpo1 = Graphs.Graphs.doublePushout(L1_K1_R1, m1);
+		
+		Graph L2=fac.createGraph(new int[][] {{0,0}, {1, 0}}, "L2");
+		Graph K2=fac.createGraph(new int[][] {{0}}, "K2");
+		Graph R2=fac.createGraph(new int[][] {{0,0},{1,0}}, "R2");
+		
+		GraphMorphism l2= fac.createGraphMorphism(K2, "l2", L2, new int[][] {{1}}, new int[][] {});
+		GraphMorphism r2= fac.createGraphMorphism(K2, "r2", R2, new int[][] {{1}}, new int[][] {});
+		GraphMorphism m2= fac.createGraphMorphism(L2, "m2", dpo1.get().pushout.left.trg(), new int[][] {{1,0}, {0,1}}, new int[][] {{1}});
+		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l2, r2);
+		
+		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m2);
+		
+		RuleApplication<GraphMorphism> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
+				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
+		RuleApplication<GraphMorphism> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
+				dpo2.get().pushout.left, m2,dpo2.get().pushout.right);
+		boolean independent = new RuleApplications().areSequentialIndependent(rule1, rule2, Graphs.Graphs);
+		assertFalse("should not be independent",independent);
 	}
 	//########### TGraphs #####################
 	@Test
