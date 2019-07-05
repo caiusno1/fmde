@@ -24,6 +24,9 @@ import org.upb.fmde.de.categories.concrete.graphs.GraphMorphism;
 import org.upb.fmde.de.categories.concrete.graphs.GraphPrinter;
 import org.upb.fmde.de.categories.concrete.graphs.Graphs;
 import org.upb.fmde.de.categories.concrete.graphs.helpers.GraphFactory;
+import org.upb.fmde.de.categories.concrete.tgraphs.TGraph;
+import org.upb.fmde.de.categories.concrete.tgraphs.TGraphMorphism;
+import org.upb.fmde.de.categories.concrete.tgraphs.TGraphs;
 import org.upb.fmde.de.categories.diagrams.Diagram;
 import org.upb.fmde.de.categories.independence.RuleApplication;
 import org.upb.fmde.de.categories.independence.RuleApplications;
@@ -375,7 +378,9 @@ public class ConfluenceTests {
 	@Test
 	public void notSequentialIndependentGraphs() {
 		GraphFactory fac = new GraphFactory();
+		Graph TG = fac.createGraph(new int[][] {}, "TG");
 		Graph L1=fac.createGraph(new int[][] {{0,1},{0,0}}, "L1");
+		TGraph tL1=new TGraph("L1", fac.createGraphMorphism(L1, "t", TG, new int[][] {}, new int[][] {}));
 		Graph K1=fac.createGraph(new int[][] {{0}}, "K1");
 		Graph R1=fac.createGraph(new int[][] {{0,0},{1,0}}, "R1");
 		Graph G=fac.createGraph(new int[][] {{0,1}, {0,0}}, "K1");
@@ -409,34 +414,42 @@ public class ConfluenceTests {
 	@Test
 	public void sequentialIndependentTGraphs() {
 		GraphFactory fac = new GraphFactory();
-		Graph L1=fac.createGraph(new int[][] {{0}}, "L1");
-		Graph K1=fac.createGraph(new int[][] {{0}}, "K1");
-		Graph R1=fac.createGraph(new int[][] {{0,1},{0,0}}, "R1");
-		Graph G=fac.createGraph(new int[][] {{1}}, "K1");
+		Graph TG = fac.createGraph(new int[][] {}, "TG");
+		Graph uL1=fac.createGraph(new int[][] {{0}}, "uL1");
+		TGraph L1 = new TGraph("L1", fac.createGraphMorphism(uL1, "t", TG, new int[][] {}, new int[][] {}));
+		Graph uK1=fac.createGraph(new int[][] {{0}}, "K1");
+		TGraph K1 = new TGraph("K1", fac.createGraphMorphism(uL1, "t", TG, new int[][] {}, new int[][] {}));
+		Graph uR1=fac.createGraph(new int[][] {{0,1},{0,0}}, "R1");
+		TGraph R1 = new TGraph("R1", fac.createGraphMorphism(uL1, "t", TG, new int[][] {}, new int[][] {}));
+		Graph uG=fac.createGraph(new int[][] {{1}}, "G");
+		TGraph G = new TGraph("G", fac.createGraphMorphism(uL1, "t", TG, new int[][] {}, new int[][] {}));
 		
-		GraphMorphism l1= fac.createGraphMorphism(K1, "l1", L1, new int[][] {{1}}, new int[][] {});
-		GraphMorphism r1= fac.createGraphMorphism(K1, "r1", R1, new int[][] {{1}}, new int[][] {});
-		GraphMorphism m1= fac.createGraphMorphism(L1, "m1", G, new int[][] {{1}}, new int[][] {});
-		Span<GraphMorphism> L1_K1_R1 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		TGraphMorphism l1= new TGraphMorphism("l1",fac.createGraphMorphism(uK1, "l1", uL1, new int[][] {{1}}, new int[][] {}),K1,L1);
+		TGraphMorphism r1= new TGraphMorphism("r1",fac.createGraphMorphism(uK1, "r1", uR1, new int[][] {{1}}, new int[][] {}),K1,R1);
+		TGraphMorphism m1= new TGraphMorphism("m1",fac.createGraphMorphism(uL1, "m1", uG, new int[][] {{1}}, new int[][] {}),L1,G);
+		Span<TGraphMorphism> L1_K1_R1 = new Span<TGraphMorphism>(TGraphs.TGraphsFor(TG), l1, r1);
 		
-		Optional<DirectDerivation<GraphMorphism>> dpo1 = Graphs.Graphs.doublePushout(L1_K1_R1, m1);
+		Optional<DirectDerivation<TGraphMorphism>> dpo1 = TGraphs.TGraphsFor(TG).doublePushout(L1_K1_R1, m1);
 		
-		Graph L2=fac.createGraph(new int[][] {{0}}, "L2");
-		Graph K2=fac.createGraph(new int[][] {{0}}, "K2");
-		Graph R2=fac.createGraph(new int[][] {{0,1},{0,0}}, "R2");
+		Graph uL2=fac.createGraph(new int[][] {{0}}, "L2");
+		TGraph L2=new TGraph("L2", fac.createGraphMorphism(uL2, "t", TG, new int[][] {}, new int[][] {}));
+		Graph uK2=fac.createGraph(new int[][] {{0}}, "K2");
+		TGraph K2=new TGraph("K2", fac.createGraphMorphism(uK2, "t", TG, new int[][] {}, new int[][] {}));
+		Graph uR2=fac.createGraph(new int[][] {{0,1},{0,0}}, "R2");
+		TGraph R2=new TGraph("R2", fac.createGraphMorphism(uR2, "t", TG, new int[][] {}, new int[][] {}));
 		
-		GraphMorphism l2= fac.createGraphMorphism(K2, "l2", L2, new int[][] {{1}}, new int[][] {});
+		TGraphMorphism l2= new TGraphMorphism("l2",fac.createGraphMorphism(uK2, "l2", uL2, new int[][] {{1}}, new int[][] {}),K2,L2);
 		GraphMorphism r2= fac.createGraphMorphism(K2, "r2", R2, new int[][] {{1}}, new int[][] {});
-		GraphMorphism m2= fac.createGraphMorphism(L1, "m2", dpo1.get().pushoutComplement.first.trg(), new int[][] {{1}}, new int[][] {});
-		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l1, r1);
+		GraphMorphism m2= fac.createGraphMorphism(L2, "m2", dpo1.get().pushout.left.trg(), new int[][] {{1}}, new int[][] {});
+		Span<GraphMorphism> L2_K2_R2 = new Span<GraphMorphism>(Graphs.Graphs, l2, r2);
 		
-		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m1);
+		Optional<DirectDerivation<GraphMorphism>> dpo2 = Graphs.Graphs.doublePushout(L2_K2_R2, m2);
 		
 		RuleApplication<GraphMorphism> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
 				dpo1.get().pushout.left, m1,dpo1.get().pushout.right);
 		RuleApplication<GraphMorphism> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
 				dpo2.get().pushout.left, m2,dpo2.get().pushout.right);
-		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, Graphs.Graphs);
+		boolean independent = new RuleApplications().areSequentialIndependent(rule1, rule2, Graphs.Graphs);
 		assertTrue("should be independent",independent);
 	}
 }
