@@ -20,6 +20,17 @@ public class RuleApplications {
 	public boolean areParallelIndependent(RuleApplication<TotalFunction> r, RuleApplication<TotalFunction> r2, FinSets cat) {
 		return this.areParallelIndependent(r, r2,(P,G)-> new FinSetPatternMatcher(P, G),cat);
 	}
+	// ---------------------------------JUST FOR DEMONSTRATION-------------------------------------------------
+	public boolean areParallelIndependentWithGivenIAndJ(RuleApplication<TotalFunction> r, RuleApplication<TotalFunction> r2,TotalFunction i, TotalFunction j , FinSets cat) {
+		if ((cat.compose(i, r2.getArrowF())).isTheSameAs(r.getMatch())
+				&& ( cat.compose(j, r.getArrowG())).isTheSameAs(r2.getMatch())) {
+			return true;
+		} else
+		{
+			return false;
+		}
+	}
+	// --------------------------------------------------------------------------------------------------------
 	
 	public boolean areSequentialIndependent(RuleApplication<TotalFunction> r, RuleApplication<TotalFunction> r2, FinSets cat) {
 		return this.areSequentialIndependent(r, r2,(P,G)-> new FinSetPatternMatcher(P, G),cat);

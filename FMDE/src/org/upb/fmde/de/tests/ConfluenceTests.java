@@ -63,7 +63,60 @@ public class ConfluenceTests {
 		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
 				dpo2.get().pushout.left, m2, null);
 		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, FinSets.FinSets);
+		
+		TotalFunction i = new TotalFunction(L1, "i", dpo2.get().pushoutComplement.first.trg());
+		i.addMapping(L1.get("existingCard"), dpo2.get().pushoutComplement.first.trg().get("install new sink"));
+		TotalFunction j = new TotalFunction(L2, "j", dpo1.get().pushoutComplement.first.trg());
+		j.addMapping(L2.get("existingCard"), dpo1.get().pushoutComplement.first.trg().get("install new sink"));
+		
+		boolean independentWithIAndJ = new RuleApplications().areParallelIndependentWithGivenIAndJ(rule1, rule2, i , j, FinSets.FinSets);
 		Assert.assertTrue("should be independent", independent);
+		Assert.assertTrue("should be independent with i and j",independentWithIAndJ);
+	}
+	
+	@Test
+	public void parallelIndependenceDemo() {
+		// TODO: Implement parallelIndependence
+		FinSet L1 = new FinSet("L1", "a");
+		FinSet R1 = new FinSet("R1", "a", "b");
+		FinSet K1 = new FinSet("K1", "a");
+		FinSet G = new FinSet("G", "c");
+
+		TotalFunction r1 = new TotalFunction(K1, "r1", R1).addMapping(K1.get("a"), R1.get("a"));
+		TotalFunction l1 = new TotalFunction(K1, "l1", L1).addMapping(K1.get("a"), L1.get("a"));
+		TotalFunction m1 = new TotalFunction(L1, "m1", G).addMapping(L1.get("a"), G.get("c"));
+
+		Span<TotalFunction> L1_K1_R1 = new Span<TotalFunction>(FinSets.FinSets, l1, r1);
+
+		Optional<DirectDerivation<TotalFunction>> dpo1 = FinSets.FinSets.doublePushout(L1_K1_R1, m1);
+
+		FinSet L2 = new FinSet("L2", "a");
+		FinSet R2 = new FinSet("R2", "a", "b");
+		FinSet K2 = new FinSet("K2", "a");
+
+		TotalFunction r2 = new TotalFunction(K2, "r2", R2).addMapping(K2.get("a"), R2.get("a"));
+		TotalFunction l2 = new TotalFunction(K2, "l2", L2).addMapping(K2.get("a"), L2.get("a"));
+		TotalFunction m2 = new TotalFunction(L2, "m2", G).addMapping(L2.get("a"), G.get("c"));
+		Span<TotalFunction> L2_K2_R2 = new Span<TotalFunction>(FinSets.FinSets, l2, r2);
+
+		Optional<DirectDerivation<TotalFunction>> dpo2 = FinSets.FinSets.doublePushout(L2_K2_R2, m2);
+		RuleApplication<TotalFunction> rule1 = new RuleApplication<>(L1_K1_R1, dpo1.get().pushoutComplement.second,
+				dpo1.get().pushout.left, m1,null);
+		RuleApplication<TotalFunction> rule2 = new RuleApplication<>(L2_K2_R2, dpo2.get().pushoutComplement.second,
+				dpo2.get().pushout.left, m2, null);
+		boolean independent = new RuleApplications().areParallelIndependent(rule1, rule2, FinSets.FinSets);
+		
+		// --------------To Be filled---------------------------------------------------- 
+		TotalFunction i = new TotalFunction(L1, "i", dpo2.get().pushoutComplement.first.trg());
+		i.addMapping(L1.get("a"), dpo2.get().pushoutComplement.first.trg().get("c"));
+		TotalFunction j = new TotalFunction(L2, "j", dpo1.get().pushoutComplement.first.trg());
+		j.addMapping(L2.get("a"), dpo1.get().pushoutComplement.first.trg().get("c"));
+		// --------------To Be filled----------------------------------------------------
+		
+		
+		boolean independentWithIAndJ = new RuleApplications().areParallelIndependentWithGivenIAndJ(rule1, rule2, i , j, FinSets.FinSets);
+		Assert.assertTrue("should be independent", independent);
+		Assert.assertTrue("should be independent with i and j",independentWithIAndJ);
 	}
 
 	/**
