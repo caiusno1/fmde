@@ -108,9 +108,9 @@ public class ConfluenceTests {
 		
 		// --------------To Be filled---------------------------------------------------- 
 		TotalFunction i = new TotalFunction(L1, "i", dpo2.get().pushoutComplement.first.trg());
-		i.addMapping(L1.get("a"), dpo2.get().pushoutComplement.first.trg().get("c"));
+		//i.addMapping(L1.get(""), dpo2.get().pushoutComplement.first.trg().get(""));
 		TotalFunction j = new TotalFunction(L2, "j", dpo1.get().pushoutComplement.first.trg());
-		j.addMapping(L2.get("a"), dpo1.get().pushoutComplement.first.trg().get("c"));
+		//j.addMapping(L2.get(""), dpo1.get().pushoutComplement.first.trg().get(""));
 		// --------------To Be filled----------------------------------------------------
 		
 		
